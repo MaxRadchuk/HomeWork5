@@ -85,7 +85,7 @@
             dest: /usr/local/bin/docker-compose
             mode: 'u+x,g+x'
         become: yes
-
+        
       - name: copy Docker Compose files
         copy:
           src: docker-compose.yml
@@ -98,9 +98,7 @@
         become: True
         shell:
           cmd: "docker-compose.yml up -d"
-          chdir: /mnt/files/Git/lesson2_alfa/homework2/
-
-
+          chdir: /home/max/
 
       
 
