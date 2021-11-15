@@ -1,0 +1,6 @@
+[localTest]
+
+127.0.0.1
+
+ansible_user=ubuntu
+ansimble_ssh_private_key_file=key.pem

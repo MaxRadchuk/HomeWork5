@@ -1,0 +1,103 @@
+- name: Alfalocal
+  hosts: localhost
+  connection: local
+
+  tasks: 
+      - name: Check Ping
+        ping:
+                 
+      - name: Update server
+        apt:
+          update_cache: yes
+        become: yes
+
+
+      - name: Docker install
+        apt: 
+            name:
+            - ca-certificates
+            - curl
+            - gnupg
+            - lsb-release
+            state: present
+        become: yes
+
+      - name: Add key to apt
+        apt_key:
+              url: https://download.docker.com/linux/ubuntu/gpg
+              state: present
+
+      - name: Add specified repository into sources list
+        ansible.builtin.apt_repository:
+          repo: deb https://download.docker.com/linux/ubuntu focal stable
+          state: present
+
+      - name: Update servers
+        apt: 
+           update_cache: yes
+      
+      - name: Docker install
+        apt: 
+            name:
+            - docker-ce
+            - docker-ce-cli
+            - containerd.io
+            state: present
+      
+      - name: Start Cocker service
+        ansible.builtin.service:
+          name: docker
+          state: started
+        become: yes
+
+      - name: Install Apache2
+        apt: 
+            name: apache2
+            state: present
+
+      - name: Start Apache2
+        apt: 
+            name: apache2
+            state: present
+
+      - name: Create Index.html
+        file:
+          path: /var/www/html/index.html
+          owner: www-data
+          group: www-data
+          mode: '0644'
+          state: touch
+          
+      - name: Add content
+        blockinfile:
+          path: /var/www/html/index.html
+          block: |
+            {{ ansible_default_ipv4.address }} 
+            TEXT
+
+      - name: Install docker-compose
+        remote_user: ubuntu
+        get_url: 
+            url : https://github.com/docker/compose/releases/download/1.25.1-rc1/docker-compose-Linux-x86_64
+            dest: /usr/local/bin/docker-compose
+            mode: 'u+x,g+x'
+
+      - name: copy Docker Compose files
+        copy:
+          src: docker-compose.yml
+          dest: /mnt/files/Git/lesson2_alfa/homework3/
+        loop:
+        - Dockerfile
+
+
+        - name: Run container
+          become: True
+          shell:
+            cmd: "docker-compose.yml up -d"
+            chdir: /home/max/
+
+
+
+      
+
+
