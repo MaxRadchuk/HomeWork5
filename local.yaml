@@ -86,20 +86,13 @@
             mode: 'u+x,g+x'
         become: yes
         
-      - name: copy Docker Compose files
+      - name: copy Docker Compose files2
         copy:
           src: docker-compose.yml
-          dest: /mnt/files/Git/lesson2_alfa/homework3/
-        loop:
-        - Dockerfile
+          dest: /home/max
 
-
-      - name: Run container
-        become: True
-        shell:
-          cmd: "docker-compose.yml up -d"
-          chdir: /home/max/
-
-      
-
-
+      - name: copy Docker Compose files3
+        docker_compose:
+          project_src: /home/max
+          files:
+            - docker-compose.yml
